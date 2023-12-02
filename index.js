@@ -1,5 +1,4 @@
 const { parse } = require("rss-to-json");
-const player = require("play-sound")();
 
 (async () => {
   try {

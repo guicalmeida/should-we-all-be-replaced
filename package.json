@@ -9,7 +9,6 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "play-sound": "^1.1.6",
     "rss-to-json": "^2.1.1"
   }
 }
