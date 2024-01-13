@@ -26,11 +26,11 @@ function readMP3FilesFromDirectory(directory) {
 // Function to combine MP3 files using ffmpeg
 function combineMP3Files(outputFile, inputFiles) {
   const fileList = inputFiles.map((file) => `-i "${file}"`).join(" ");
-  const command = `ffmpeg ${fileList} -filter_complex concat=n=${inputFiles.length}:v=0:a=1 -q:a 2 "${outputFile}"`;
+  const command = `ffmpeg -y ${fileList} -filter_complex concat=n=${inputFiles.length}:v=0:a=1 -q:a 2 "${outputFile}"`;
   execSync(command);
 
   execSync(
-    'ffmpeg -i ./output/finalPoem.mp3 -i ./city_soundscape.mp3 -filter_complex "[0:a]volume=1.0[a];[1:a]volume=0.5[b];[a][b]amix=inputs=2:duration=first" finalFile.mp3'
+    'ffmpeg -y -i ./output/finalPoem.mp3 -i ./city_soundscape.mp3 -filter_complex "[0:a]volume=1.0[a];[1:a]volume=0.3[b];[a][b]amix=inputs=2:duration=first" ./output/poem_with_soundscape.mp3'
   );
 }
 
@@ -38,7 +38,6 @@ function combineMP3Files(outputFile, inputFiles) {
 const googleLinesDirectory = "./googleLines";
 const defaultLinesDirectory = "./defaultLines";
 const finalStanzasDirectory = "./finalStanzas";
-const outputDirectory = "./output";
 
 // Read MP3 files from directories
 const googleLinesArray = readMP3FilesFromDirectory(googleLinesDirectory);
@@ -65,10 +64,7 @@ if (finalStanzasArray.length > 0) {
   combinedArray.push(finalStanzasArray[randomStanzaIndex]);
 }
 
-// Specify the output file
-const outputFile = path.join(outputDirectory, "finalPoem.mp3");
-
 // Combine the arrays into a final MP3 file
-combineMP3Files(outputFile, combinedArray);
+combineMP3Files('./output/finalPoem.mp3', combinedArray);
 
-console.log(`Final MP3 file generated at: ${outputFile}`);
+console.log(`Final MP3 file generated`);
