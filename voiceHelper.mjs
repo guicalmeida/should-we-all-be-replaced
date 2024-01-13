@@ -1,4 +1,5 @@
 import * as fs from "fs";
+import dayjs from "dayjs";
 
 export const possibleVoices = [
   "21m00Tcm4TlvDq8ikWAM",
@@ -44,7 +45,6 @@ export const possibleVoices = [
   "yoZ06aMxZJJ28mfd3POQ",
   "z9fAnlkpzviPz146aGWa",
   "zcAOhNBS3c14rBihAFp1",
-  "zrHiDhphv9ZnVXBqCLjz",
 ];
 
 export function fetchAIVoiceData(line, i, dir) {
@@ -69,7 +69,7 @@ export function fetchAIVoiceData(line, i, dir) {
       .then((response) => response.arrayBuffer())
       .then((arrayBuffer) => {
         const buffer = Buffer.from(arrayBuffer);
-        fs.writeFileSync(`./${dir}/line_${i}.mp3`, buffer);
+        fs.writeFileSync(`./${dir}/line_${i}-${dayjs().format('DD-MM-YYYY')}.mp3`, buffer);
       })
       .then(() => {
         console.log(`line ${i} successfully created`);
@@ -79,5 +79,5 @@ export function fetchAIVoiceData(line, i, dir) {
         );
       })
       .catch((err) => console.error(err));
-  }, 1000 * i);
+  }, 2000 * i);
 }

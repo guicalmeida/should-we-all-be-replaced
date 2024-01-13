@@ -1,6 +1,18 @@
+import dayjs from "dayjs";
 import * as fs from "fs";
 import * as path from "path";
 import { execSync } from "child_process";
+
+const files = fs.readdirSync('./googleLines');
+const fileStats = fs.statSync(`./googleLines/${files[0]}`);
+const creationDate = dayjs(fileStats.birthtime);
+
+// Check if the file was not created today
+if (creationDate.format("DD/MM/YYYY") !== dayjs().format("DD/MM/YYYY")) {
+  execSync(
+    "rm ./googleLines/* && touch ./googleLines/voicesUsed.txt &&  node ./generateGoogleLines.mjs"
+  );
+}
 
 // Function to read MP3 files from a directory and return an array
 function readMP3FilesFromDirectory(directory) {
