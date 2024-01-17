@@ -1,2 +1,5 @@
 node_modules/*
-*.mp3
+defaultLines/*.mp3
+finalStanzas/*.mp3
+googleLines/*.mp3
+output/*.mp3
