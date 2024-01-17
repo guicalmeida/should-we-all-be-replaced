@@ -49,6 +49,7 @@ export const possibleVoices = [
 
 export function fetchAIVoiceData(line, i, dir) {
   setTimeout(() => {
+    const indexStr = i <= 9 ? `0${i + 1}` : `${i + 1}`
     const finalVoice =
       possibleVoices[Math.floor(Math.random() * possibleVoices.length)];
 
@@ -57,7 +58,7 @@ export function fetchAIVoiceData(line, i, dir) {
     const options = {
       method: "POST",
       headers: {
-        "xi-api-key": "25cdb76f06803afa274978628dfed638",
+        "xi-api-key": "2c9254298dd9d9ad604ee47bc08e7a0b",
         "Content-Type": "application/json",
       },
       body: `{"model_id":"eleven_multilingual_v2","text": ${JSON.stringify(
@@ -69,13 +70,13 @@ export function fetchAIVoiceData(line, i, dir) {
       .then((response) => response.arrayBuffer())
       .then((arrayBuffer) => {
         const buffer = Buffer.from(arrayBuffer);
-        fs.writeFileSync(`./${dir}/line_${i}-${dayjs().format('DD-MM-YYYY')}.mp3`, buffer);
+        fs.writeFileSync(`./${dir}/line_${indexStr}-${dayjs().format('DD-MM-YYYY')}.mp3`, buffer);
       })
       .then(() => {
-        console.log(`line ${i} successfully created`);
+        console.log(`line ${indexStr} successfully created`);
         fs.appendFileSync(
           `./${dir}/voicesUsed.txt`,
-          `line ${i} voice id: ${finalVoice}\n`
+          `line ${indexStr} voice id: ${finalVoice}\n`
         );
       })
       .catch((err) => console.error(err));

@@ -26,11 +26,11 @@ function readMP3FilesFromDirectory(directory) {
 // Function to combine MP3 files using ffmpeg
 function combineMP3Files(outputFile, inputFiles) {
   const fileList = inputFiles.map((file) => `-i "${file}"`).join(" ");
-  const command = `ffmpeg -y ${fileList} -filter_complex concat=n=${inputFiles.length}:v=0:a=1 -q:a 2 "${outputFile}"`;
+  const command = `ffmpeg -y ${fileList} -filter_complex concat=n=${inputFiles.length}:v=0:a=1,compand,loudnorm -q:a 2 "${outputFile}"`;
   execSync(command);
 
   execSync(
-    'ffmpeg -y -i ./output/finalPoem.mp3 -i ./city_soundscape.mp3 -filter_complex "[0:a]volume=1.0[a];[1:a]volume=0.3[b];[a][b]amix=inputs=2:duration=first" ./output/poem_with_soundscape.mp3'
+    'ffmpeg -y -i ./output/finalPoem.mp3 -i ./city_soundscape.mp3 -filter_complex "[0:a]volume=1.0[a];[1:a]volume=0.2[b];[a][b]amix=inputs=2:duration=first" ./output/poem_with_soundscape.mp3'
   );
 }
 
