@@ -69,52 +69,62 @@ export function fetchAIVoiceData(line, i, dir, title) {
     return;
   }
 
-  setTimeout(() => {
-    const finalVoice =
-      possibleVoices[Math.floor(Math.random() * possibleVoices.length)];
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      const finalVoice =
+        possibleVoices[Math.floor(Math.random() * possibleVoices.length)];
 
-    const url = `https://api.elevenlabs.io/v1/text-to-speech/${finalVoice}?output_format=mp3_22050_32`;
+      const url = `https://api.elevenlabs.io/v1/text-to-speech/${finalVoice}?output_format=mp3_22050_32`;
 
-    const options = {
-      method: "POST",
-      headers: {
-        "xi-api-key": "2c9254298dd9d9ad604ee47bc08e7a0b",
-        "Content-Type": "application/json",
-      },
-      body: `{"model_id":"eleven_multilingual_v2","text": ${JSON.stringify(
-        line
-      )}, "voice_settings":{"similarity_boost":0.5,"stability":0.75,"style":0,"use_speaker_boost":true}}`,
-    };
+      const options = {
+        method: "POST",
+        headers: {
+          "xi-api-key": "2c9254298dd9d9ad604ee47bc08e7a0b",
+          "Content-Type": "application/json",
+        },
+        body: `{"model_id":"eleven_multilingual_v2","text": ${JSON.stringify(
+          line
+        )}, "voice_settings":{"similarity_boost":0.5,"stability":0.75,"style":0,"use_speaker_boost":true}}`,
+      };
 
-    fetch(url, options)
-      .then((response) => response.arrayBuffer())
-      .then((arrayBuffer) => {
-        const buffer = Buffer.from(arrayBuffer);
-        const fileName = title
-          ? `./${dir}/${title}-${dayjs().format("DD-MM-YYYY")}.mp3`
-          : `./${dir}/${line}_${indexStr}-${dayjs().format("DD-MM-YYYY")}.mp3`;
+      fetch(url, options)
+        .then((response) => response.arrayBuffer())
+        .then((arrayBuffer) => {
+          const buffer = Buffer.from(arrayBuffer);
+          const fileName = title
+            ? `./${dir}/${title}-${dayjs().format("DD-MM-YYYY")}.mp3`
+            : `./${dir}/${line}_${indexStr}-${dayjs().format(
+                "DD-MM-YYYY"
+              )}.mp3`;
 
-        fs.writeFileSync(fileName, buffer);
-      })
-      .then(() => {
-        console.log(`text ${metadataText} successfully created`);
-        try {
-          const data = fs.readFileSync(filePath, "utf8"); // Read the file synchronously
-          const json = JSON.parse(data);
+          fs.writeFileSync(fileName, buffer);
+        })
+        .then(() => {
+          console.log(`text ${metadataText} successfully created`);
+          try {
+            const data = fs.readFileSync(filePath, "utf8"); // Read the file synchronously
+            const json = JSON.parse(data);
 
-          json.push({
-            text: metadataText,
-            voiceId: finalVoice,
-            creationDate: dayjs().format("YYYY-MM-DDTHH:mm"),
-          });
+            json.push({
+              text: metadataText,
+              voiceId: finalVoice,
+              creationDate: dayjs().format("YYYY-MM-DDTHH:mm"),
+            });
 
-          fs.writeFileSync(filePath, JSON.stringify(json)); // Write the updated JSON back to the file
-        } catch (err) {
+            fs.writeFileSync(filePath, JSON.stringify(json)); // Write the updated JSON back to the file
+            resolve(); // Resolve the Promise here
+          } catch (err) {
+            console.error(err);
+            reject(err); // Reject the Promise if an error occurs
+          }
+        })
+        .catch((err) => {
           console.error(err);
-        }
-      })
-      .catch((err) => console.error(err));
-  }, 2000 * i);
+          reject(err); // Reject the Promise if an error occurs
+        })
+        .catch((err) => console.error(err));
+    }, 2000 * i);
+  });
 }
 
 export function combineVerses(originalPoemArr, googlePoemArr) {
@@ -122,22 +132,25 @@ export function combineVerses(originalPoemArr, googlePoemArr) {
 
   originalPoemArr.forEach((defaultLine, i) => {
     const addGoogleLine = () => {
-      const thisLineIndex = Math.floor(Math.random() * googlePoemArr.length);
-      combinedArray.push(googlePoemArr[thisLineIndex]);
-      googlePoemArr.splice(thisLineIndex, 1);
+      if (googlePoemArr.length > 0) {
+        const thisLineIndex = Math.floor(Math.random() * googlePoemArr.length);
+        combinedArray.push(googlePoemArr[thisLineIndex]);
+        googlePoemArr.splice(thisLineIndex, 1);
+      }
     };
 
     combinedArray.push(defaultLine);
     addGoogleLine();
-    const remaining = originalPoemArr.length - i;
 
-    if (googlePoemArr.length >= remaining && Math.random() > 0.3) {
+    while (googlePoemArr.length > 0 && Math.random() > 0.4) {
       addGoogleLine();
-    } else if (i === originalPoemArr.length - 1) {
-      while (googlePoemArr.length > 0) {
-        addGoogleLine();
-      }
     }
   });
+
+  // Add remaining googlePoemArr items
+  while (googlePoemArr.length > 0) {
+    combinedArray.push(googlePoemArr.shift());
+  }
+
   return combinedArray;
 }

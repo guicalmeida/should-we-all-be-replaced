@@ -19,8 +19,8 @@ import { fetchAIVoiceData } from "./voiceHelper.mjs";
     ];
 
     // generate each line
-    poemArray.forEach((line, i) => {
-      fetchAIVoiceData(line, i, "defaultLines");
+    poemArray.forEach(async (line, i) => {
+      await fetchAIVoiceData(line, i, "defaultLines");
     });
   } catch (error) {
     console.error("Error:", JSON.parse(error));

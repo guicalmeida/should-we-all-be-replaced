@@ -5,8 +5,8 @@ import { fetchAIVoiceData } from "./voiceHelper.mjs";
     const lastStanza = `É preciso viver com os homens\né preciso não assassiná-los,\né preciso ter mãos pálidas\ne anunciar O FIM DO MUNDO.`;
 
     // generate last stanza in multiple voices
-    for (let i = 4; i < 10; i++) {
-      fetchAIVoiceData(lastStanza, i, "finalStanzas");
+    for (let i = 0; i < 10; i++) {
+      await fetchAIVoiceData(lastStanza, i, "finalStanzas");
     }
   } catch (error) {
     console.error("Error:", JSON.parse(error));
