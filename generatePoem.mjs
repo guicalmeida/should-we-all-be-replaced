@@ -9,10 +9,11 @@ const fileStats = fs.statSync(`./googleLines/${files[0]}`);
 const creationDate = dayjs(fileStats.birthtime);
 
 // Check if the file was not created today
-if (files.length <= 1 || creationDate.format("DD/MM/YYYY") !== dayjs().format("DD/MM/YYYY")) {
-  execSync(
-    "rm ./googleLines/* && touch ./googleLines/voicesUsed.txt &&  node ./generateGoogleLines.mjs"
-  );
+if (
+  files.length <= 1 ||
+  creationDate.format("DD/MM/YYYY HH:mm") !== dayjs().format("DD/MM/YYYY HH:mm")
+) {
+  execSync("node ./generateGoogleLines.mjs");
 }
 
 // Function to read MP3 files from a directory and return an array

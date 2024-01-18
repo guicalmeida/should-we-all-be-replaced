@@ -1,4 +1,4 @@
-import rssJson  from "rss-to-json";
+import rssJson from "rss-to-json";
 import { fetchAIVoiceData } from "./utils.mjs";
 
 (async () => {
@@ -6,6 +6,8 @@ import { fetchAIVoiceData } from "./utils.mjs";
     const rss = await rssJson.parse(
       "https://trends.google.com.br/trends/trendingsearches/daily/rss?geo=BR"
     );
+
+    const titles = await rss?.items?.map((item) => item?.title);
 
     const prefixes = [
       "pesquisar sobre",
@@ -18,14 +20,14 @@ import { fetchAIVoiceData } from "./utils.mjs";
       "contar com",
     ];
 
-    const poeticTrends = rss?.items?.map((item) => {
+    const poeticTrends = titles?.map((title) => {
       return `É preciso ${
         prefixes[Math.floor(Math.random() * prefixes.length)]
-      } ${item?.title}`;
+      } ${title}`;
     });
 
     for (let i = 0; i < poeticTrends.length; i++) {
-      fetchAIVoiceData(poeticTrends[i], i, "googleLines");
+      fetchAIVoiceData(poeticTrends[i], i, "googleLines", titles[i]);
     }
 
     // generate each line

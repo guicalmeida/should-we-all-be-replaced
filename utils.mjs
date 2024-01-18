@@ -47,9 +47,29 @@ export const possibleVoices = [
   "zcAOhNBS3c14rBihAFp1",
 ];
 
-export function fetchAIVoiceData(line, i, dir) {
+export function fetchAIVoiceData(line, i, dir, title) {
+  const filePath = `./${dir}/metadata.json`;
+  const indexStr = i <= 8 ? `0${i + 1}` : `${i + 1}`;
+  const metadataText = title ? title : `line_${indexStr}`;
+
+  let isRepeated = false;
+
+  try {
+    const data = fs.readFileSync(filePath, "utf8"); // Read the file synchronously
+    const json = JSON.parse(data);
+    if (json.some((meta) => meta.text === metadataText)) {
+      isRepeated = true;
+    }
+  } catch (err) {
+    console.error(err);
+  }
+
+  if (isRepeated) {
+    console.log(`text "${metadataText}" already generated`);
+    return;
+  }
+
   setTimeout(() => {
-    const indexStr = i <= 8 ? `0${i + 1}` : `${i + 1}`;
     const finalVoice =
       possibleVoices[Math.floor(Math.random() * possibleVoices.length)];
 
@@ -70,17 +90,28 @@ export function fetchAIVoiceData(line, i, dir) {
       .then((response) => response.arrayBuffer())
       .then((arrayBuffer) => {
         const buffer = Buffer.from(arrayBuffer);
-        fs.writeFileSync(
-          `./${dir}/line_${indexStr}-${dayjs().format("DD-MM-YYYY")}.mp3`,
-          buffer
-        );
+        const fileName = title
+          ? `./${dir}/${title}-${dayjs().format("DD-MM-YYYY")}.mp3`
+          : `./${dir}/${line}_${indexStr}-${dayjs().format("DD-MM-YYYY")}.mp3`;
+
+        fs.writeFileSync(fileName, buffer);
       })
       .then(() => {
-        console.log(`line ${indexStr} successfully created`);
-        fs.appendFileSync(
-          `./${dir}/voicesUsed.txt`,
-          `line ${indexStr} voice id: ${finalVoice}\n`
-        );
+        console.log(`text ${metadataText} successfully created`);
+        try {
+          const data = fs.readFileSync(filePath, "utf8"); // Read the file synchronously
+          const json = JSON.parse(data);
+
+          json.push({
+            text: metadataText,
+            voiceId: finalVoice,
+            creationDate: dayjs().format("YYYY-MM-DDTHH:mm"),
+          });
+
+          fs.writeFileSync(filePath, JSON.stringify(json)); // Write the updated JSON back to the file
+        } catch (err) {
+          console.error(err);
+        }
       })
       .catch((err) => console.error(err));
   }, 2000 * i);
