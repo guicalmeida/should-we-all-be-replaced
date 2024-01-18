@@ -2,13 +2,14 @@ import dayjs from "dayjs";
 import * as fs from "fs";
 import * as path from "path";
 import { execSync } from "child_process";
+import { combineVerses } from "./utils.mjs";
 
-const files = fs.readdirSync('./googleLines');
+const files = fs.readdirSync("./googleLines");
 const fileStats = fs.statSync(`./googleLines/${files[0]}`);
 const creationDate = dayjs(fileStats.birthtime);
 
 // Check if the file was not created today
-if (creationDate.format("DD/MM/YYYY") !== dayjs().format("DD/MM/YYYY")) {
+if (files.length <= 1 || creationDate.format("DD/MM/YYYY") !== dayjs().format("DD/MM/YYYY")) {
   execSync(
     "rm ./googleLines/* && touch ./googleLines/voicesUsed.txt &&  node ./generateGoogleLines.mjs"
   );
@@ -45,18 +46,9 @@ const defaultLinesArray = readMP3FilesFromDirectory(defaultLinesDirectory);
 const finalStanzasArray = readMP3FilesFromDirectory(finalStanzasDirectory);
 
 // Combine MP3 files
-const combinedArray = [];
+const combinedArray = combineVerses(defaultLinesArray, googleLinesArray);
 
-defaultLinesArray.map((defaultLine) => {
-  combinedArray.push(defaultLine);
-  if (Math.random() > 0.3) {
-    const thisLineIndex = Math.floor(Math.random() * googleLinesArray.length);
-    combinedArray.push(googleLinesArray[thisLineIndex]);
-    googleLinesArray.splice(thisLineIndex, 1);
-  }
-});
-
-// Add a random final stanza
+// Add a random final stanza/
 if (finalStanzasArray.length > 0) {
   const randomStanzaIndex = Math.floor(
     Math.random() * finalStanzasArray.length
@@ -65,6 +57,6 @@ if (finalStanzasArray.length > 0) {
 }
 
 // Combine the arrays into a final MP3 file
-combineMP3Files('./output/finalPoem.mp3', combinedArray);
+combineMP3Files("./output/finalPoem.mp3", combinedArray);
 
 console.log(`Final MP3 file generated`);

@@ -1,5 +1,6 @@
-import rssJson  from "rss-to-json";
-import * as fs from 'fs'
+import rssJson from "rss-to-json";
+import * as fs from "fs";
+import { combineVerses } from "./utils.mjs";
 
 (async () => {
   try {
@@ -42,16 +43,7 @@ import * as fs from 'fs'
       } ${item?.title}`;
     });
 
-    const newPoem = [];
-
-    poemArray.forEach((verse) => {
-      newPoem.push(verse);
-      if (Math.random() > 0.3) {
-        const verseIndex = Math.floor(Math.random() * poeticTrends.length);
-        newPoem.push(poeticTrends[verseIndex]);
-        poeticTrends.splice(verseIndex, 1);
-      }
-    });
+    const newPoem = combineVerses(poemArray, poeticTrends);
 
     const finalPoemText = (
       "       " +

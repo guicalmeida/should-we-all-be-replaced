@@ -49,7 +49,7 @@ export const possibleVoices = [
 
 export function fetchAIVoiceData(line, i, dir) {
   setTimeout(() => {
-    const indexStr = i <= 9 ? `0${i + 1}` : `${i + 1}`
+    const indexStr = i <= 8 ? `0${i + 1}` : `${i + 1}`;
     const finalVoice =
       possibleVoices[Math.floor(Math.random() * possibleVoices.length)];
 
@@ -70,7 +70,10 @@ export function fetchAIVoiceData(line, i, dir) {
       .then((response) => response.arrayBuffer())
       .then((arrayBuffer) => {
         const buffer = Buffer.from(arrayBuffer);
-        fs.writeFileSync(`./${dir}/line_${indexStr}-${dayjs().format('DD-MM-YYYY')}.mp3`, buffer);
+        fs.writeFileSync(
+          `./${dir}/line_${indexStr}-${dayjs().format("DD-MM-YYYY")}.mp3`,
+          buffer
+        );
       })
       .then(() => {
         console.log(`line ${indexStr} successfully created`);
@@ -81,4 +84,29 @@ export function fetchAIVoiceData(line, i, dir) {
       })
       .catch((err) => console.error(err));
   }, 2000 * i);
+}
+
+export function combineVerses(originalPoemArr, googlePoemArr) {
+  const combinedArray = [];
+
+  originalPoemArr.forEach((defaultLine, i) => {
+    const addGoogleLine = () => {
+      const thisLineIndex = Math.floor(Math.random() * googlePoemArr.length);
+      combinedArray.push(googlePoemArr[thisLineIndex]);
+      googlePoemArr.splice(thisLineIndex, 1);
+    };
+
+    combinedArray.push(defaultLine);
+    addGoogleLine();
+    const remaining = originalPoemArr.length - i;
+
+    if (googlePoemArr.length >= remaining && Math.random() > 0.3) {
+      addGoogleLine();
+    } else if (i === originalPoemArr.length - 1) {
+      while (googlePoemArr.length > 0) {
+        addGoogleLine();
+      }
+    }
+  });
+  return combinedArray;
 }
