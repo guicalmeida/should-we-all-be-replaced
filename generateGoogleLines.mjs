@@ -1,26 +1,18 @@
 import rssJson from "rss-to-json";
-import { fetchAIVoiceData } from "./utils.mjs";
+import { fetchAIVoiceData, prefixes } from "./utils.mjs";
+import chalk from 'chalk';
 
 export default async function generateGoogleLines() {
   try {
-    console.log("\n\nINITIALIZING GOOGLE POEM GENERATION...\n\n");
+    const agaGreen = chalk.hex('#00E600').bold;
+    
+    console.log(agaGreen("\n\nINITIALIZING GOOGLE POEM GENERATION...\n\n"));
 
     const rss = await rssJson.parse(
       "https://trends.google.com.br/trends/trendingsearches/daily/rss?geo=BR"
     );
 
     const titles = await rss?.items?.map((item) => item?.title);
-
-    const prefixes = [
-      "pesquisar sobre",
-      "entender melhor",
-      "estudar",
-      "acreditar em",
-      "saber mais de",
-      "chegar a",
-      "saber tudo de",
-      "contar com",
-    ];
 
     const poeticTrends = titles?.map((title) => {
       return `É preciso ${
@@ -32,10 +24,10 @@ export default async function generateGoogleLines() {
       await fetchAIVoiceData(poeticTrends[i], i, "googleLines", titles[i]);
     }
 
-    console.log("\n\nGOOGLE POEM GENERATION ENDED SUCCESSFULLY\n\n");
+    console.log(agaGreen("\n\nGOOGLE POEM GENERATION ENDED SUCCESSFULLY\n\n"));
 
     // generate each line
   } catch (error) {
-    console.error("Error:", JSON.parse(error));
+    console.log(chalk.red.bold("\n\nERROR IN GENERATING GOOGLE POEM. NO INTERNET CONNECTION?\n\n"));
   }
 }

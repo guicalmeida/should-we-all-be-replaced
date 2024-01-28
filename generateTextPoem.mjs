@@ -1,13 +1,10 @@
 import rssJson from "rss-to-json";
 import * as fs from "fs";
-import { combineVerses } from "./utils.mjs";
+import { combineVerses, prefixes } from "./utils.mjs";
+import metadata from "./googleLines/metadata.json" assert {type: 'json'};
 
 (async () => {
   try {
-    const rss = await rssJson.parse(
-      "https://trends.google.com.br/trends/trendingsearches/daily/rss?geo=BR"
-    );
-
     const poemArray = [
       "É preciso casar João,",
       "é preciso suportar Antônio,",
@@ -26,33 +23,39 @@ import { combineVerses } from "./utils.mjs";
 
     const lastStanza = `É preciso viver com os homens\né preciso não assassiná-los,\né preciso ter mãos pálidas\ne anunciar O FIM DO MUNDO.`;
 
-    const prefixes = [
-      "pesquisar sobre",
-      "entender melhor",
-      "estudar",
-      "acreditar em",
-      "saber mais de",
-      "chegar a",
-      "saber tudo de",
-      "contar com",
-    ];
-
-    const poeticTrends = rss?.items?.map((item) => {
+    const poeticTrends = metadata?.map((item) => {
       return `É preciso ${
         prefixes[Math.floor(Math.random() * prefixes.length)]
-      } ${item?.title}`;
+      } ${item?.text}`;
     });
+        
+    function remove30percentItems(arr) {
+      const arrCopy = [...arr];
+      const newArr = [];
+      const thirtyPctLess = Math.floor(arr.length * 0.7);
+      do {
+       const randomIndex = Math.floor(Math.random() * arrCopy.length);
+       newArr.push(arrCopy[randomIndex]);
+       arrCopy.splice(randomIndex, 1);
+      } while (arrCopy.length > thirtyPctLess);
+      return newArr;
+    }
+    
+    for (let i = 0; i < 10; i++) {
+      const newTrends = remove30percentItems(poeticTrends);
+      const newPoem = combineVerses(poemArray, newTrends);
 
-    const newPoem = combineVerses(poemArray, poeticTrends);
+      const finalPoemText = (
+        "       " +
+        newPoem.join("       ") +
+        "       " +
+        lastStanza.replace(/\n/g, "       ")
+      ).toUpperCase();
 
-    const finalPoemText = (
-      "       " +
-      newPoem.join("       ") +
-      "       " +
-      lastStanza.replace(/\n/g, "       ")
-    ).toUpperCase();
+      fs.writeFileSync(`poem_${i}.txt`, finalPoemText);
+    }
 
-    fs.writeFileSync("poem.txt", finalPoemText);
+
   } catch (error) {
     console.error("Error:", JSON.parse(error));
   }
