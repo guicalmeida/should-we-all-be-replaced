@@ -4,7 +4,10 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "generateAudioPoem": "node ./generatePoem.mjs",
+    "generateTextPoem": "node ./generateTextPoem.mjs",
+    "startVoiceGenerationLoop": "node ./play.mjs"
   },
   "author": "",
   "license": "ISC",
