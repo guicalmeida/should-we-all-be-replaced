@@ -1,11 +1,11 @@
 import rssJson from "rss-to-json";
 import { fetchAIVoiceData, prefixes } from "./utils.mjs";
-import chalk from 'chalk';
+import chalk from "chalk";
 
 export default async function generateGoogleLines() {
   try {
-    const agaGreen = chalk.hex('#00E600').bold;
-    
+    const agaGreen = chalk.hex("#00E600").bold;
+
     console.log(agaGreen("\n\nINITIALIZING GOOGLE POEM GENERATION...\n\n"));
 
     const rss = await rssJson.parse(
@@ -26,8 +26,11 @@ export default async function generateGoogleLines() {
 
     console.log(agaGreen("\n\nGOOGLE POEM GENERATION ENDED SUCCESSFULLY\n\n"));
 
-    // generate each line
   } catch (error) {
-    console.log(chalk.red.bold("\n\nERROR IN GENERATING GOOGLE POEM. NO INTERNET CONNECTION?\n\n"));
+    console.log(
+      chalk.red.bold(
+        "\n\nERROR IN GENERATING GOOGLE POEM. NO INTERNET CONNECTION?\n\n"
+      )
+    );
   }
 }

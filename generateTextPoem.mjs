@@ -1,7 +1,6 @@
-import rssJson from "rss-to-json";
 import * as fs from "fs";
 import { combineVerses, prefixes } from "./utils.mjs";
-import metadata from "./googleLines/metadata.json" assert {type: 'json'};
+import metadata from "./googleLines/metadata.json" assert { type: "json" };
 
 (async () => {
   try {
@@ -28,19 +27,19 @@ import metadata from "./googleLines/metadata.json" assert {type: 'json'};
         prefixes[Math.floor(Math.random() * prefixes.length)]
       } ${item?.text}`;
     });
-        
+
     function remove30percentItems(arr) {
       const arrCopy = [...arr];
       const newArr = [];
       const thirtyPctLess = Math.floor(arr.length * 0.7);
       do {
-       const randomIndex = Math.floor(Math.random() * arrCopy.length);
-       newArr.push(arrCopy[randomIndex]);
-       arrCopy.splice(randomIndex, 1);
+        const randomIndex = Math.floor(Math.random() * arrCopy.length);
+        newArr.push(arrCopy[randomIndex]);
+        arrCopy.splice(randomIndex, 1);
       } while (arrCopy.length > thirtyPctLess);
       return newArr;
     }
-    
+
     for (let i = 0; i < 10; i++) {
       const newTrends = remove30percentItems(poeticTrends);
       const newPoem = combineVerses(poemArray, newTrends);
@@ -54,8 +53,6 @@ import metadata from "./googleLines/metadata.json" assert {type: 'json'};
 
       fs.writeFileSync(`poem_${i}.txt`, finalPoemText);
     }
-
-
   } catch (error) {
     console.error("Error:", JSON.parse(error));
   }

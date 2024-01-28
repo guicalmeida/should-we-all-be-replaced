@@ -4,9 +4,8 @@ import * as path from "path";
 import { execSync } from "child_process";
 import { combineVerses } from "./utils.mjs";
 import generateGoogleLines from "./generateGoogleLines.mjs";
-import chalk from 'chalk';
+import chalk from "chalk";
 
-// Function to read MP3 files from a directory and return an array
 function readMP3FilesFromDirectory(directory) {
   try {
     const files = fs.readdirSync(directory);
@@ -19,7 +18,6 @@ function readMP3FilesFromDirectory(directory) {
   }
 }
 
-// Function to combine MP3 files using ffmpeg
 function combineMP3Files(outputFile, inputFiles) {
   const fileList = inputFiles.map((file) => `-i "${file}"`).join(" ");
   const command = `ffmpeg -y ${fileList} -filter_complex concat=n=${inputFiles.length}:v=0:a=1,compand,loudnorm -q:a 2 "${outputFile}"`;
@@ -31,41 +29,44 @@ function combineMP3Files(outputFile, inputFiles) {
   );
 }
 
-// Specify your directory paths
 const googleLinesDirectory = "./googleLines";
 const defaultLinesDirectory = "./defaultLines";
 const finalStanzasDirectory = "./finalStanzas";
 
-// Read MP3 files from directories
 const initialGoogleLinesArray = readMP3FilesFromDirectory(googleLinesDirectory);
 const defaultLinesArray = readMP3FilesFromDirectory(defaultLinesDirectory);
 const finalStanzasArray = readMP3FilesFromDirectory(finalStanzasDirectory);
 
-let fileStats = {}
+let fileStats = {};
 if (initialGoogleLinesArray.length > 0) {
-    const fileStats = fs.statSync(`./${initialGoogleLinesArray[0]}`);  
+  fileStats = fs.statSync(`./${initialGoogleLinesArray[0]}`);
 }
 
-const creationDate = fileStats?.birthtime ? dayjs(fileStats.birthtime) : dayjs('1970-12-30');
+const creationDate = fileStats?.birthtime
+  ? dayjs(fileStats.birthtime)
+  : dayjs("1970-12-30");
 
 if (
   initialGoogleLinesArray.length < 1 ||
   creationDate.format("DD/MM/YYYY HH:mm") !== dayjs().format("DD/MM/YYYY HH:mm")
 ) {
-  await generateGoogleLines().then(() => {
-    const newGoogleLinesArray = readMP3FilesFromDirectory(googleLinesDirectory);
-    if (newGoogleLinesArray.length > 0) {
-      processFiles(newGoogleLinesArray);
-    }
-  }).catch(() => {
-    processFiles(initialGoogleLinesArray);
-  });
+  await generateGoogleLines()
+    .then(() => {
+      const newGoogleLinesArray =
+        readMP3FilesFromDirectory(googleLinesDirectory);
+      if (newGoogleLinesArray.length > 0) {
+        processFiles(newGoogleLinesArray);
+      }
+    })
+    .catch(() => {
+      processFiles(initialGoogleLinesArray);
+    });
 } else {
   processFiles(initialGoogleLinesArray);
 }
 
 function processFiles(googleLinesArray) {
-  const originalLinesLength = googleLinesArray.length
+  const originalLinesLength = googleLinesArray.length;
   const combinedArray = combineVerses(defaultLinesArray, googleLinesArray);
 
   if (finalStanzasArray.length > 0) {
@@ -74,14 +75,14 @@ function processFiles(googleLinesArray) {
     );
     combinedArray.push(finalStanzasArray[randomStanzaIndex]);
   }
-  
+
   if (originalLinesLength != initialGoogleLinesArray.length) {
-    const agaGreen = chalk.hex('#00E600').bold;
+    const agaGreen = chalk.hex("#00E600").bold;
     console.log(agaGreen(`\n\nGENERATING NEW POEM...\n\n`));
     combineMP3Files("./output/finalPoem.mp3", combinedArray);
     console.log(agaGreen(`\n\nFINAL MP3 FILE GENERATED SUCCESSFULLY\n\n`));
   } else {
-    const purple = chalk.hex('#CC99FF').bold;
+    const purple = chalk.hex("#CC99FF").bold;
     console.log(purple("\n\nUSING EXISTING POEM...\n\n"));
   }
 }

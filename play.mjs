@@ -1,6 +1,6 @@
 import { execSync } from "child_process";
 import dayjs from "dayjs";
-import isBetween from 'dayjs/plugin/isBetween.js';
+import isBetween from "dayjs/plugin/isBetween.js";
 dayjs.extend(isBetween);
 
 const startTime = dayjs().set("hour", 8).set("minute", 0).set("second", 0);

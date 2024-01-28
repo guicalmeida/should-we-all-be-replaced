@@ -1,6 +1,6 @@
 import * as fs from "fs";
 import dayjs from "dayjs";
-import chalk from 'chalk';
+import chalk from "chalk";
 
 export const possibleVoices = [
   "21m00Tcm4TlvDq8ikWAM",
@@ -49,21 +49,21 @@ export const possibleVoices = [
 ];
 
 export const prefixes = [
-      "pesquisar sobre",
-      "entender melhor",
-      "estudar",
-      "acreditar em",
-      "saber mais de",
-      "chegar a",
-      "saber tudo de",
-      "contar com",
-      "ler a respeito de",
-      "investigar",
-      "descobrir sobre",
-      "se atualizar sobre",
-      "tuitar sobre",
-      "ter uma opinião sobre"
-    ];
+  "pesquisar sobre",
+  "entender melhor",
+  "estudar",
+  "acreditar em",
+  "saber mais de",
+  "chegar a",
+  "saber tudo de",
+  "contar com",
+  "ler a respeito de",
+  "investigar",
+  "descobrir sobre",
+  "se atualizar sobre",
+  "tuitar sobre",
+  "ter uma opinião sobre",
+];
 
 export function fetchAIVoiceData(line, i, dir, title) {
   const filePath = `./${dir}/metadata.json`;
@@ -118,7 +118,7 @@ export function fetchAIVoiceData(line, i, dir, title) {
           fs.writeFileSync(fileName, buffer);
         })
         .then(() => {
-    	  const agaGreen = chalk.hex('#00E600').bold;
+          const agaGreen = chalk.hex("#00E600").bold;
           console.log(agaGreen(`text ${metadataText} successfully created`));
           try {
             const data = fs.readFileSync(filePath, "utf8"); // Read the file synchronously
