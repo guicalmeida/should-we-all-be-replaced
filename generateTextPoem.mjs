@@ -20,10 +20,12 @@ export default async function generateTextPoem() {
       "https://trends.google.com.br/trends/trendingsearches/daily/rss?geo=BR"
     );
     await rss?.items?.map((item) => {
-      metadata.push({
-        text: item?.title,
-        creationDate: dayjs().format("YYYY-MM-DDTHH:mm"),
-      });
+      if (!metadata.some((data) => data?.text === item?.title)) {
+        metadata.push({
+          text: item?.title,
+          creationDate: dayjs().format("YYYY-MM-DDTHH:mm"),
+        });
+      }
 
       fs.writeFileSync(metadataFilePath, JSON.stringify(metadata));
     });
