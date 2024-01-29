@@ -30,7 +30,7 @@ import chalk from "chalk";
       await generateDefaultLines();
     },
     finalStanza: async () => {
-      await generateFinalStanza();
+      await generateFinalStanza(5);
     },
     googleLines: async () => {
       await generateGoogleLines();
