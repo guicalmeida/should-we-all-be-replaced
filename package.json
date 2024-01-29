@@ -4,10 +4,12 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "init": "node ./entrypoint.mjs init",
+    "generateGoogleLines": "node ./entrypoint.mjs googleLines",
+    "generateTextPoem": "node ./entrypoint.mjs textPoem",
+    "generateFinalStanza": "node ./entrypoint.mjs finalStanza",
     "generateAudioPoem": "node ./generatePoem.mjs",
-    "generateTextPoem": "node ./generateTextPoem.mjs",
-    "startVoiceGenerationLoop": "node ./play.mjs"
+    "startPoemLoop": "node ./play.mjs"
   },
   "author": "",
   "license": "ISC",
