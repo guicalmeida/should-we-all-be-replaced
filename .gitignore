@@ -2,5 +2,6 @@ node_modules/*
 defaultLines/*
 finalStanzas/*
 googleLines/*
+textPoems/*
 output/*
 *.txt

@@ -90,8 +90,7 @@ export function fetchAIVoiceData(line, i, dir, title) {
         .catch((err) => {
           console.error(err);
           reject(err);
-        })
-        .catch((err) => console.error(err));
+        });
     }, 2000 * i);
   });
 }

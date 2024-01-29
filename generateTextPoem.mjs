@@ -1,20 +1,32 @@
+import rssJson from "rss-to-json";
 import * as fs from "fs";
 import { combineVerses } from "./utils.mjs";
 import { lastStanza, poemArray, prefixes } from "./values.mjs";
+import dayjs from "dayjs";
 
-export default function generateTextPoem() {
-  const metadataFilePath = "./googleLines/metadata.json";
+export default async function generateTextPoem() {
+  const metadataFilePath = "./textPoems/metadata.json";
   try {
     if (!fs.existsSync("./textPoems")) {
       fs.mkdirSync("./textPoems", { recursive: true });
     }
     if (!fs.existsSync(metadataFilePath)) {
-      throw new Error(
-        'no google lines generated! Run the command "npm run generateGoogleLines" to create them.'
-      );
+      fs.writeFileSync(metadataFilePath, "[]", "utf8");
     }
     const data = fs.readFileSync(metadataFilePath, "utf8");
     const metadata = JSON.parse(data);
+
+    const rss = await rssJson.parse(
+      "https://trends.google.com.br/trends/trendingsearches/daily/rss?geo=BR"
+    );
+    await rss?.items?.map((item) => {
+      metadata.push({
+        text: item?.title,
+        creationDate: dayjs().format("YYYY-MM-DDTHH:mm"),
+      });
+
+      fs.writeFileSync(metadataFilePath, JSON.stringify(metadata));
+    });
 
     const poeticTrends = metadata?.map((item) => {
       return `É preciso ${
