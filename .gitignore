@@ -1,5 +1,5 @@
 node_modules/*
-defaultLines/*.mp3
-finalStanzas/*.mp3
-googleLines/*.mp3
-output/*.mp3
+defaultLines/*
+finalStanzas/*
+googleLines/*
+output/*
