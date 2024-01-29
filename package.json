@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "init": "node --env-file=.env ./entrypoint.mjs init",
+    "generateDefaultLines": "node --env-file=.env ./entrypoint.mjs defaultLines",
     "generateGoogleLines": "node --env-file=.env ./entrypoint.mjs googleLines",
     "generateTextPoem": "node --env-file=.env ./entrypoint.mjs textPoem",
     "generateFinalStanza": "node --env-file=.env ./entrypoint.mjs finalStanza",
