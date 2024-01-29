@@ -1,14 +1,12 @@
-import { fetchAIVoiceData } from "./voiceHelper.mjs";
+import { fetchAIVoiceData } from "./utils.mjs";
+import { lastStanza } from "./values.mjs";
 
-(async () => {
+export default async function generateFinalStanza(numOfVoices = 8) {
   try {
-    const lastStanza = `É preciso viver com os homens\né preciso não assassiná-los,\né preciso ter mãos pálidas\ne anunciar O FIM DO MUNDO.`;
-
-    // generate last stanza in multiple voices
-    for (let i = 0; i < 10; i++) {
-      await fetchAIVoiceData(lastStanza, i, "finalStanzas");
+    for (let i = 0; i < numOfVoices; i++) {
+      await fetchAIVoiceData(lastStanza, i, "finalStanzas", `finalStanza_${i}`);
     }
   } catch (error) {
     console.error("Error:", JSON.parse(error));
   }
-})();
+}

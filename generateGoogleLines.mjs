@@ -1,6 +1,7 @@
 import rssJson from "rss-to-json";
-import { fetchAIVoiceData, prefixes } from "./utils.mjs";
+import { fetchAIVoiceData } from "./utils.mjs";
 import chalk from "chalk";
+import { prefixes } from "./values.mjs";
 
 export default async function generateGoogleLines() {
   try {
@@ -29,7 +30,7 @@ export default async function generateGoogleLines() {
   } catch (error) {
     console.log(
       chalk.red.bold(
-        "\n\nERROR IN GENERATING GOOGLE POEM. NO INTERNET CONNECTION?\n\n"
+        "\n\nERROR GENERATING GOOGLE POEM. NO INTERNET CONNECTION?\n\n"
       )
     );
   }

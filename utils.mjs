@@ -1,79 +1,25 @@
 import * as fs from "fs";
 import dayjs from "dayjs";
 import chalk from "chalk";
-
-export const possibleVoices = [
-  "21m00Tcm4TlvDq8ikWAM",
-  "29vD33N1CtxCmqQRPOHJ",
-  "2EiwWnXFnvU5JabPnv8n",
-  "5Q0t7uMcjvnagumLfvZi",
-  "AZnzlk1XvdvUeBnXmlld",
-  "CYw3kZ02Hs0563khs1Fj",
-  "D38z5RcWu1voky8WS1ja",
-  "EXAVITQu4vr4xnSDxMaL",
-  "ErXwobaYiN019PkySvjV",
-  "GBv7mTt0atIp3Br8iCZE",
-  "IKne3meq5aSn9XLyUdCD",
-  "JBFqnCBsd6RMkjVDRZzb",
-  "LcfcDJNUP1GQjkzn1xUU",
-  "MF3mGyEYCl7XYWbV9V6O",
-  "N2lVS1w4EtoT3dr4eOWO",
-  "ODq5zmih8GrVes37Dizd",
-  "SOYHLrjzK2X1ezoPC6cr",
-  "TX3LPaxmHKxFdv7VOQHJ",
-  "ThT5KcBeYPX3keUQqHPh",
-  "TxGEqnHWrfWFTfGW9XjX",
-  "VR6AewLTigWG4xSOukaG",
-  "XB0fDUnXU5powFXDhCwa",
-  "XrExE9yKIg1WjnnlVkGX",
-  "Yko7PKHZNXotIFUBG7I9",
-  "ZQe5CZNOzWyzPSCn5a3c",
-  "Zlb1dXrM653N07WRdFW3",
-  "bVMeCyTHy58xNoL34h3p",
-  "flq6f7yk4E4fJM5XTYuZ",
-  "g5CIjZEefAph4nQFvHAz",
-  "jBpfuIE2acCO8z3wKNLl",
-  "jsCqWAovK2LkecY7zXl4",
-  "knrPHWnBmmDHMoiMeP3l",
-  "oWAxZDx7w5VEj9dCyTzz",
-  "onwK4e9ZLuTAKqWW03F9",
-  "pFZP5JQG7iQjIQuC4Bku",
-  "pMsXgVXv3BLzUgSXRplE",
-  "pNInz6obpgDQGcFmaJgB",
-  "piTKgcLEGmPE4e6mEKli",
-  "pqHfZKP75CvOlQylNhV4",
-  "t0jbNlBVZ17f02VDIeMI",
-  "yoZ06aMxZJJ28mfd3POQ",
-  "z9fAnlkpzviPz146aGWa",
-  "zcAOhNBS3c14rBihAFp1",
-];
-
-export const prefixes = [
-  "pesquisar sobre",
-  "entender melhor",
-  "estudar",
-  "acreditar em",
-  "saber mais de",
-  "chegar a",
-  "saber tudo de",
-  "contar com",
-  "ler a respeito de",
-  "investigar",
-  "descobrir sobre",
-  "se atualizar sobre",
-  "tuitar sobre",
-  "ter uma opinião sobre",
-];
+import slugify from "slugify";
+import { possibleVoices } from "./values.mjs";
 
 export function fetchAIVoiceData(line, i, dir, title) {
-  const filePath = `./${dir}/metadata.json`;
+  const dirPath = `./${dir}`;
+  const filePath = `${dirPath}/metadata.json`;
   const indexStr = i <= 8 ? `0${i + 1}` : `${i + 1}`;
   const metadataText = title ? title : `line_${indexStr}`;
 
   let isRepeated = false;
 
   try {
-    const data = fs.readFileSync(filePath, "utf8"); // Read the file synchronously
+    if (!fs.existsSync(dirPath)) {
+      fs.mkdirSync(dirPath, { recursive: true });
+    }
+    if (!fs.existsSync(filePath)) {
+      fs.writeFileSync(filePath, "[]", "utf8");
+    }
+    const data = fs.readFileSync(filePath, "utf8");
     const json = JSON.parse(data);
     if (json.some((meta) => meta.text === metadataText)) {
       isRepeated = true;
@@ -109,11 +55,15 @@ export function fetchAIVoiceData(line, i, dir, title) {
         .then((response) => response.arrayBuffer())
         .then((arrayBuffer) => {
           const buffer = Buffer.from(arrayBuffer);
-          const fileName = title
-            ? `./${dir}/${title}-${dayjs().format("DD-MM-YYYY")}.mp3`
-            : `./${dir}/${line}_${indexStr}-${dayjs().format(
-                "DD-MM-YYYY"
-              )}.mp3`;
+          const slug = slugify(title ?? line, {
+            lower: true,
+            remove: /[\\.,:/"()]/g,
+            replacement: "_",
+          });
+
+          const fileName = `./${dir}/${slug}-${dayjs().format(
+            "DD-MM-YYYY"
+          )}.mp3`;
 
           fs.writeFileSync(fileName, buffer);
         })
@@ -121,7 +71,7 @@ export function fetchAIVoiceData(line, i, dir, title) {
           const agaGreen = chalk.hex("#00E600").bold;
           console.log(agaGreen(`text ${metadataText} successfully created`));
           try {
-            const data = fs.readFileSync(filePath, "utf8"); // Read the file synchronously
+            const data = fs.readFileSync(filePath, "utf8");
             const json = JSON.parse(data);
 
             json.push({
@@ -130,16 +80,16 @@ export function fetchAIVoiceData(line, i, dir, title) {
               creationDate: dayjs().format("YYYY-MM-DDTHH:mm"),
             });
 
-            fs.writeFileSync(filePath, JSON.stringify(json)); // Write the updated JSON back to the file
-            resolve(); // Resolve the Promise here
+            fs.writeFileSync(filePath, JSON.stringify(json));
+            resolve();
           } catch (err) {
             console.error(err);
-            reject(err); // Reject the Promise if an error occurs
+            reject(err);
           }
         })
         .catch((err) => {
           console.error(err);
-          reject(err); // Reject the Promise if an error occurs
+          reject(err);
         })
         .catch((err) => console.error(err));
     }, 2000 * i);
@@ -166,7 +116,6 @@ export function combineVerses(originalPoemArr, googlePoemArr) {
     }
   });
 
-  // Add remaining googlePoemArr items
   while (googlePoemArr.length > 0) {
     combinedArray.push(googlePoemArr.shift());
   }

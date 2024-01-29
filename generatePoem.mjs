@@ -8,18 +8,25 @@ import chalk from "chalk";
 
 function readMP3FilesFromDirectory(directory) {
   try {
+    if (!fs.existsSync(directory)) {
+      fs.mkdirSync(directory, { recursive: true });
+    }
     const files = fs.readdirSync(directory);
     const mp3Files = files.filter(
       (file) => path.extname(file).toLowerCase() === ".mp3"
     );
     return mp3Files.map((file) => path.join(directory, file));
   } catch {
-    console.error("failed to read dir: ", directory);
+    throw new Error(`failed to read dir: ${directory}. Was it generated already?`);
   }
 }
 
 function combineMP3Files(outputFile, inputFiles) {
   const fileList = inputFiles.map((file) => `-i "${file}"`).join(" ");
+  if (!fs.existsSync('./output')) {
+    fs.mkdirSync('./output', { recursive: true });
+  }
+
   const command = `ffmpeg -y ${fileList} -filter_complex concat=n=${inputFiles.length}:v=0:a=1,compand,loudnorm -q:a 2 "${outputFile}"`;
   execSync(command, { stdio: "ignore" });
 

@@ -1,26 +1,17 @@
 import * as fs from "fs";
-import { combineVerses, prefixes } from "./utils.mjs";
-import metadata from "./googleLines/metadata.json" assert { type: "json" };
+import { combineVerses } from "./utils.mjs";
+import { lastStanza, poemArray, prefixes } from "./values.mjs";
 
-(async () => {
+export default function generateTextPoem() {
+  const filePath = "./googleLines/metadata.json";
   try {
-    const poemArray = [
-      "É preciso casar João,",
-      "é preciso suportar Antônio,",
-      "é preciso odiar Melquíades",
-      "é preciso substituir nós todos.",
-      "É preciso salvar o país,",
-      "é preciso crer em Deus,",
-      "é preciso pagar as dívidas,",
-      "é preciso comprar um rádio,",
-      "é preciso esquecer fulana.",
-      "É preciso estudar volapuque,",
-      "é preciso estar sempre bêbado,",
-      "é preciso ler Baudelaire,",
-      "é preciso colher as flores de que rezam velhos autores.",
-    ];
-
-    const lastStanza = `É preciso viver com os homens\né preciso não assassiná-los,\né preciso ter mãos pálidas\ne anunciar O FIM DO MUNDO.`;
+    if (!fs.existsSync(filePath)) {
+      throw new Error(
+        'no google lines generated! Run the command "npm run generateGoogleLines" to create them.'
+      );
+    }
+    const data = fs.readFileSync(filePath, "utf8");
+    const metadata = JSON.parse(data);
 
     const poeticTrends = metadata?.map((item) => {
       return `É preciso ${
@@ -56,4 +47,4 @@ import metadata from "./googleLines/metadata.json" assert { type: "json" };
   } catch (error) {
     console.error("Error:", JSON.parse(error));
   }
-})();
+}
