@@ -4,12 +4,12 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "init": "node ./entrypoint.mjs init",
-    "generateGoogleLines": "node ./entrypoint.mjs googleLines",
-    "generateTextPoem": "node ./entrypoint.mjs textPoem",
-    "generateFinalStanza": "node ./entrypoint.mjs finalStanza",
-    "generateAudioPoem": "node ./generatePoem.mjs",
-    "startPoemLoop": "node ./play.mjs"
+    "init": "node --env-file=.env ./entrypoint.mjs init",
+    "generateGoogleLines": "node --env-file=.env ./entrypoint.mjs googleLines",
+    "generateTextPoem": "node --env-file=.env ./entrypoint.mjs textPoem",
+    "generateFinalStanza": "node --env-file=.env ./entrypoint.mjs finalStanza",
+    "generateAudioPoem": "node --env-file=.env ./generatePoem.mjs",
+    "startPoemLoop": "node --env-file=.env ./play.mjs"
   },
   "author": "",
   "license": "ISC",

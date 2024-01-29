@@ -43,7 +43,7 @@ export function fetchAIVoiceData(line, i, dir, title) {
       const options = {
         method: "POST",
         headers: {
-          "xi-api-key": "2c9254298dd9d9ad604ee47bc08e7a0b",
+          "xi-api-key": process.env.ELEVENLABS_API_KEY,
           "Content-Type": "application/json",
         },
         body: `{"model_id":"eleven_multilingual_v2","text": ${JSON.stringify(

@@ -5,3 +5,5 @@ googleLines/*
 textPoems/*
 output/*
 *.txt
+.env
+!.env.example
