@@ -3,14 +3,17 @@ import { combineVerses } from "./utils.mjs";
 import { lastStanza, poemArray, prefixes } from "./values.mjs";
 
 export default function generateTextPoem() {
-  const filePath = "./googleLines/metadata.json";
+  const metadataFilePath = "./googleLines/metadata.json";
   try {
-    if (!fs.existsSync(filePath)) {
+    if (!fs.existsSync("./textPoems")) {
+      fs.mkdirSync("./textPoems", { recursive: true });
+    }
+    if (!fs.existsSync(metadataFilePath)) {
       throw new Error(
         'no google lines generated! Run the command "npm run generateGoogleLines" to create them.'
       );
     }
-    const data = fs.readFileSync(filePath, "utf8");
+    const data = fs.readFileSync(metadataFilePath, "utf8");
     const metadata = JSON.parse(data);
 
     const poeticTrends = metadata?.map((item) => {
@@ -42,7 +45,7 @@ export default function generateTextPoem() {
         lastStanza.replace(/\n/g, "       ")
       ).toUpperCase();
 
-      fs.writeFileSync(`poem_${i}.txt`, finalPoemText);
+      fs.writeFileSync(`./textPoems/poem_${i}.txt`, finalPoemText);
     }
   } catch (error) {
     console.error("Error:", JSON.parse(error));
