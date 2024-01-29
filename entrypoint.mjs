@@ -1,4 +1,3 @@
-import { execSync } from "child_process";
 import generateDefaultLines from "./generateDefaultLines.mjs";
 import generateFinalStanza from "./generateFinalStanza.mjs";
 import generateGoogleLines from "./generateGoogleLines.mjs";
@@ -28,19 +27,19 @@ import chalk from "chalk";
   }
   const argMap = {
     defaultLines: async () => {
-      generateDefaultLines();
+      await generateDefaultLines();
     },
     finalStanza: async () => {
-      generateFinalStanza();
+      await generateFinalStanza();
     },
     googleLines: async () => {
-      generateGoogleLines();
+      await generateGoogleLines();
     },
     textPoem: async () => {
-      generateTextPoem();
+      await generateTextPoem();
     },
     audioPoem: async () => {
-      generateAudioPoem();
+      await generateAudioPoem();
     },
     init: async () => {
       console.log(
@@ -55,7 +54,7 @@ import chalk from "chalk";
       );
       await generateDefaultLines();
       await generateFinalStanza();
-      execSync("node ./generatePoem.mjs", { stdio: "inherit" });
+      await generateAudioPoem();
     },
   };
 
