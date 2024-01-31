@@ -2,7 +2,7 @@ import dayjs from "dayjs";
 import * as fs from "fs";
 import * as path from "path";
 import { execSync } from "child_process";
-import { combineVerses } from "./utils.mjs";
+import { combineVerses } from "../helpers/utils.mjs";
 import generateGoogleLines from "./generateGoogleLines.mjs";
 import chalk from "chalk";
 

@@ -1,7 +1,7 @@
 import rssJson from "rss-to-json";
-import { fetchAIVoiceData } from "./utils.mjs";
+import { fetchAIVoiceData } from "../helpers/utils.mjs";
 import chalk from "chalk";
-import { prefixes } from "./values.mjs";
+import { prefixes } from "../helpers/values.mjs";
 
 export default async function generateGoogleLines() {
   try {

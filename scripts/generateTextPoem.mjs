@@ -1,7 +1,7 @@
 import rssJson from "rss-to-json";
 import * as fs from "fs";
-import { combineVerses } from "./utils.mjs";
-import { lastStanza, poemArray, prefixes } from "./values.mjs";
+import { combineVerses } from "../helpers/utils.mjs";
+import { lastStanza, poemArray, prefixes } from "../helpers/values.mjs";
 import dayjs from "dayjs";
 
 export default async function generateTextPoem() {

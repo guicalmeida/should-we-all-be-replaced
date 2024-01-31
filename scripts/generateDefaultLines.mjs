@@ -1,5 +1,5 @@
-import { fetchAIVoiceData } from "./utils.mjs";
-import { poemArray } from "./values.mjs";
+import { fetchAIVoiceData } from "../helpers/utils.mjs";
+import { poemArray } from "../helpers/values.mjs";
 
 export default async function generateDefaultLines() {
   try {

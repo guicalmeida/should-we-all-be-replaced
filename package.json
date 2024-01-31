@@ -10,7 +10,7 @@
     "generateTextPoem": "node --env-file=.env ./entrypoint.mjs textPoem",
     "generateFinalStanza": "node --env-file=.env ./entrypoint.mjs finalStanza",
     "generateAudioPoem": "node --env-file=.env ./generatePoem.mjs",
-    "startPoemLoop": "node --env-file=.env ./play.mjs"
+    "startPoemLoop": "node --env-file=.env ./scripts/play.mjs"
   },
   "author": "",
   "license": "ISC",

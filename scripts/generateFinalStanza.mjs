@@ -1,5 +1,5 @@
-import { fetchAIVoiceData } from "./utils.mjs";
-import { lastStanza } from "./values.mjs";
+import { fetchAIVoiceData } from "../helpers/utils.mjs";
+import { lastStanza } from "../helpers/values.mjs";
 
 export default async function generateFinalStanza(numOfVoices = 5) {
   try {
