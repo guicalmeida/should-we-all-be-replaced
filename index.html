@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>É preciso substituir nós todos?</title>
+  </head>
+  <body>
+    <h1>gerador de poema</h1>
+    <button id="generateButton">gerar</button>
+    <div id="output"></div>
+    <script type="module">
+      import { generateHtmlPoem } from "./scripts/generateHtmlNodes.mjs";
+
+      const button = document.getElementById("generateButton");
+      button.addEventListener("click", () => {
+        button.disabled = true;
+        generateHtmlPoem()
+          .then((nodes) => {
+            const outputDiv = document.getElementById("output");
+
+            nodes.forEach((node, i) => {
+              const group = document.createElement("div");
+              group.style.display = "flex";
+              group.style.alignItems = "center";
+              group.style.gap = "24px";
+              group.style.maxWidth = "600px";
+
+              const number = document.createElement("span");
+              number.style.fontSize = "40px";
+              number.style.fontWeight = "bold";
+              number.textContent = `${i + 1}`;
+
+              node.style.marginBottom = "24px";
+              node.style.whiteSpace = "pre-wrap";
+              if (i % 2) {
+                node.style.color = "grey";
+              }
+
+              group.appendChild(number);
+              group.appendChild(node);
+
+              outputDiv.appendChild(group);
+            });
+          })
+          .catch((error) => {
+            console.error("Error:", error);
+          })
+          .finally(() => {
+            button.disabled = false;
+          });
+      });
+    </script>
+  </body>
+</html>
